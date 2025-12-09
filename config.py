@@ -455,3 +455,97 @@ MAX_WINDOW_CHARS = 15000
 
 
 
+
+
+
+#=====================FILTER PDF ================================================
+"""
+Chronology PDF Generator - Configuration
+Edit this file only - no hardcoded paths elsewhere
+"""
+from pathlib import Path
+
+# ============================================================================
+# MAIN SETTINGS - Edit these
+# ============================================================================
+
+# Input files
+JSON_INPUT_PATH = "trimmed_combined_pass (1).json"
+SYNOPSIS_PDF = "synopsis.pdf"  # Set to None or "" to skip synopsis
+
+# Data folder containing all source PDFs
+DATA_FOLDER = "C:/Users/703405804/Downloads/filter pdf/New POC/Chronology/Data"
+
+# Output folder for all generated files
+OUTPUT_FOLDER = "output"
+
+# ============================================================================
+# OPTIONAL SETTINGS
+# ============================================================================
+
+LOG_LEVEL = "INFO"
+LOG_FILE = "output/chronology_pipeline.log"
+TRIMMED_PAGES_FOLDER = "output/trimmed_pages"
+
+# Advanced settings
+PDF_DPI = 150
+SIMILARITY_THRESHOLD = 0.85
+MIN_TEXT_LENGTH = 50
+
+# Backward compatibility alias
+PDF_ROOT_FOLDER = DATA_FOLDER
+
+# ============================================================================
+# AUTO SETUP
+# ============================================================================
+
+def setup_folders():
+    """Create necessary output folders."""
+    Path(OUTPUT_FOLDER).mkdir(parents=True, exist_ok=True)
+    Path(TRIMMED_PAGES_FOLDER).mkdir(parents=True, exist_ok=True)
+
+def resolve_paths():
+    """Validate and resolve all paths."""
+    global JSON_INPUT_PATH, DATA_FOLDER, PDF_ROOT_FOLDER, OUTPUT_FOLDER, TRIMMED_PAGES_FOLDER, LOG_FILE, SYNOPSIS_PDF
+
+    json_path = Path(JSON_INPUT_PATH).resolve()
+    data_path = Path(DATA_FOLDER).resolve()
+    output_path = Path(OUTPUT_FOLDER).resolve()
+    trimmed_path = Path(TRIMMED_PAGES_FOLDER).resolve()
+
+    if not json_path.exists():
+        raise FileNotFoundError(f"JSON not found: {json_path}")
+    if not data_path.exists():
+        raise FileNotFoundError(f"Data folder not found: {data_path}")
+
+    output_path.mkdir(parents=True, exist_ok=True)
+    trimmed_path.mkdir(parents=True, exist_ok=True)
+
+    JSON_INPUT_PATH = str(json_path)
+    DATA_FOLDER = str(data_path)
+    PDF_ROOT_FOLDER = DATA_FOLDER
+    OUTPUT_FOLDER = str(output_path)
+    TRIMMED_PAGES_FOLDER = str(trimmed_path)
+
+    # Resolve synopsis PDF if provided
+    if SYNOPSIS_PDF:
+        synopsis_path = Path(SYNOPSIS_PDF).resolve()
+        if synopsis_path.exists():
+            SYNOPSIS_PDF = str(synopsis_path)
+            print(f"  Synopsis: {SYNOPSIS_PDF}")
+        else:
+            print(f"  ⚠️  Synopsis PDF not found: {synopsis_path} (will skip)")
+            SYNOPSIS_PDF = None
+
+    if LOG_FILE:
+        Path(LOG_FILE).parent.mkdir(parents=True, exist_ok=True)
+
+try:
+    resolve_paths()
+    print(f"✓ Configuration loaded")
+    print(f"  JSON: {JSON_INPUT_PATH}")
+    print(f"  Data: {DATA_FOLDER}")
+    print(f"  Output: {OUTPUT_FOLDER}")
+except FileNotFoundError as e:
+    print(f"\n⚠️  {e}")
+    raise

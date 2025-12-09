@@ -1,0 +1,124 @@
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    CHRONOLOGY PIPELINE - QUICK REFERENCE                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📂 FOLDER STRUCTURE
+───────────────────────────────────────────────────────────────────────────────
+chronology_pipeline/
+  ├── run_pipeline.py          👈 Main entry point
+  ├── config.py               👈 Edit this first!
+  ├── README.md               📖 Full documentation
+  ├── SETUP_GUIDE.txt         📋 Setup instructions
+  └── steps/                  🔧 All 6 processing steps
+      ├── step1_extract.py
+      ├── step2_merge.py
+      ├── step3_update_json.py
+      ├── step4_create_table.py
+      ├── step5_final_merge.py
+      └── step6_hyperlink.py
+
+───────────────────────────────────────────────────────────────────────────────
+⚙️  CONFIGURATION (config.py)
+───────────────────────────────────────────────────────────────────────────────
+Required Settings:
+  • JSON_INPUT_PATH   → Path to your events JSON file
+  • DATA_FOLDER       → Folder containing source PDF files
+  • SYNOPSIS_PDF      → Cover page PDF (optional, set to None to skip)
+  • OUTPUT_FOLDER     → Where to save generated files (default: "output")
+
+───────────────────────────────────────────────────────────────────────────────
+🚀 RUNNING THE PIPELINE
+───────────────────────────────────────────────────────────────────────────────
+Basic Usage:
+  cd chronology_pipeline
+  python run_pipeline.py
+
+Skip Steps:
+  python run_pipeline.py --skip-step 6
+
+Run Single Step:
+  python -m steps.step1_extract
+
+───────────────────────────────────────────────────────────────────────────────
+📊 PIPELINE FLOW
+───────────────────────────────────────────────────────────────────────────────
+Step 1: Extract Pages       → Extract referenced pages from source PDFs
+Step 2: Merge PDFs          → Combine all extracted pages
+Step 3: Update JSON         → Map page numbers to merged document
+Step 4: Create Table        → Generate formatted chronology table
+Step 5: Final Merge         → Combine synopsis + table + documents
+Step 6: Add Hyperlinks      → Make page numbers clickable
+
+───────────────────────────────────────────────────────────────────────────────
+📄 OUTPUT FILES
+───────────────────────────────────────────────────────────────────────────────
+Main Output:
+  output/Final_Chronology.pdf    ✨ Final PDF with hyperlinks
+
+Intermediate Files:
+  output/final_chronology.pdf    → PDF before hyperlinks
+  output/table_report.pdf        → Chronology table only
+  output/merged_index.pdf        → Merged source documents
+  output/timeline_updated.json   → Updated event data
+  output/page_mapping.json       → Page number mappings
+  output/trimmed_pages/          → Extracted pages
+
+Logs:
+  output/chronology_pipeline.log → Main log file
+  output/chronology_pipeline_stepX.log → Individual step logs
+
+───────────────────────────────────────────────────────────────────────────────
+📦 REQUIRED DEPENDENCIES
+───────────────────────────────────────────────────────────────────────────────
+Install with:
+  pip install pypdf reportlab pymupdf
+
+Packages:
+  • pypdf      → PDF reading and manipulation
+  • reportlab  → PDF table generation
+  • pymupdf    → Hyperlink insertion (imported as 'fitz')
+
+───────────────────────────────────────────────────────────────────────────────
+🔧 TROUBLESHOOTING
+───────────────────────────────────────────────────────────────────────────────
+PDF Not Found:
+  ✓ Check DATA_FOLDER path in config.py
+  ✓ Ensure source PDFs exist in the specified folder
+  ✓ Pipeline searches recursively in subdirectories
+
+Page Mapping Issues:
+  ✓ Verify JSON structure (see README.md for format)
+  ✓ Check that page numbers in JSON are valid
+  ✓ Review output/page_mapping.json for details
+
+Step Failures:
+  ✓ Check logs in output/ folder
+  ✓ Run steps individually to isolate issues
+  ✓ Ensure previous steps completed successfully
+
+───────────────────────────────────────────────────────────────────────────────
+💡 TIPS
+───────────────────────────────────────────────────────────────────────────────
+• Set SYNOPSIS_PDF = None if you don't have a cover page
+• Check logs for detailed progress information
+• Run individual steps for debugging specific issues
+• Keep source PDFs organized in subdirectories
+• JSON file should have "events" array with "sources" and "pages"
+
+───────────────────────────────────────────────────────────────────────────────
+📞 QUICK START CHECKLIST
+───────────────────────────────────────────────────────────────────────────────
+□ Install dependencies: pip install pypdf reportlab pymupdf
+□ Edit config.py with your file paths
+□ Place JSON file in the pipeline directory
+□ Place synopsis PDF (if using) in the pipeline directory
+□ Ensure source PDFs are in DATA_FOLDER
+□ Run: python run_pipeline.py
+□ Check output/Final_Chronology.pdf
+
+───────────────────────────────────────────────────────────────────────────────
+
+                         🎉 Happy Processing! 🎉
+
+╚══════════════════════════════════════════════════════════════════════════════╝
